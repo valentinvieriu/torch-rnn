@@ -1,0 +1,10 @@
+version: "2"
+services:
+    torch-rnn:
+      build: .
+      image: 'valentinvieriu/torch-rnn:1.0.1'
+      devices: 
+        - '/dev/nvidia0:/dev/nvidia0'
+        - '/dev/nvidiactl:/dev/nvidiactl'
+        - '/dev/nvidia-uvm:/dev/nvidia-uvm'
+        - '/dev/nvidia-uvm-tools:/dev/nvidia-uvm-tools'
