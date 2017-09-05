@@ -2,7 +2,7 @@ version: "2"
 services:
     torch-rnn:
       build: .
-      image: 'valentinvieriu/torch-rnn:1.0.1'
+      image: 'valentinvieriu/torch-rnn:1.0.2'
       devices: 
         - '/dev/nvidia0:/dev/nvidia0'
         - '/dev/nvidiactl:/dev/nvidiactl'

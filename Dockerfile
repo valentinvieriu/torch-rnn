@@ -1,4 +1,5 @@
 FROM nvidia/cuda:8.0-devel-ubuntu16.04
+# FROM nvidia/cuda:8.0-cudnn7-devel-ubuntu16.04
 # Forked from https://github.com/crisbal/docker-torch-rnn/blob/master/CUDA/8.0/Dockerfile
 ENV DEBIAN_FRONTEND noninteractive
 ENV DEBCONF_NONINTERACTIVE_SEEN true
@@ -52,13 +53,28 @@ RUN luarocks install cutorch && \
 RUN pip install --upgrade pip
 RUN pip install -U setuptools
 
-# we use https://github.com/jcjohnson/torch-rnn/blob/master/requirements.txt as a quideline
+# we use https://github.com/valentinvieriu/torch-rnn-1/blob/master/requirements.txt as a quideline
 RUN pip install Cython==0.23.4
 RUN pip install numpy==1.10.4
 RUN pip install argparse==1.2.1
 RUN HDF5_DIR=/usr/lib/x86_64-linux-gnu/hdf5/serial/ pip install h5py==2.5.0
 RUN pip install six==1.10.0
-RUN git clone https://github.com/jcjohnson/torch-rnn
+RUN pip install wsgiref==0.1.2
+RUN pip install unidecode==0.4.20
+RUN luarocks install luautf8
+RUN luarocks install cudnn
+RUN git clone https://github.com/valentinvieriu/torch-rnn-1 torch-rnn
+
+# We need CUDNN 5.1 - we use https://gitlab.com/nvidia/cuda/blob/ubuntu16.04/8.0/devel/cudnn5/Dockerfile
+RUN echo "deb http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list
+ENV CUDNN_VERSION 5.1.10
+LABEL com.nvidia.cudnn.version="${CUDNN_VERSION}"
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+            libcudnn5=$CUDNN_VERSION-1+cuda8.0 \
+            libcudnn5-dev=$CUDNN_VERSION-1+cuda8.0 && \
+    rm -rf /var/lib/apt/lists/*
+
 
 #Done!
 WORKDIR /root/torch-rnn
